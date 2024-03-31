@@ -1,24 +1,28 @@
-const express = require("express");
-const cors = require("cors");
-const app = express();
-const start = require("./downloader");
+// ***************************importing section started*********************
+
 require("dotenv").config();
+const express = require("express");
+const app = express();
+
+const cors = require("cors");
 app.use(cors());
+
+const youtubeRoutes = require("./router/youtube-router");
+
+// ***************************importing section ended*********************
+
+// ***************************middleware section started*********************
+
 app.use(express.json());
+
+app.use("/api/youtube", youtubeRoutes);
+
+// ***************************middleware section ended*********************
 
 app.get("/", (req, res) => {
   res.send("server is listening");
 });
-app.post("/download", async (req, res) => {
-  try {
-    console.log(req.body);
-    const { url } = req.body;
-    const data = await start(url);
-    res.status(200).json(data);
-  } catch (error) {
-    res.status(500).json({ msg: "something went wrong", error });
-  }
-});
+
 const port = process.env.PORT || 5000;
 
 app.listen(port, console.log(`Server is Listing on port ${port}`));
