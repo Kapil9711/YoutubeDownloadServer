@@ -9,6 +9,7 @@ app.use(cors());
 
 const youtubeRoutes = require("./router/youtube-router");
 const connectDB = require("./db/db");
+const { feedUrl } = require("./controllers/youtube-controllers");
 
 // ***************************importing section ended*********************
 
@@ -24,7 +25,7 @@ app.get("/", (req, res) => {
   res.send("server is listening");
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
 const startConnection = async () => {
   try {
@@ -38,3 +39,15 @@ startConnection();
 
 const url =
   "https://www.youtube.com/playlist?list=PLMHt1AwZySBxYtheucUhzm8spzSaRqQLm";
+
+const startFeed = async () => {
+  try {
+    console.log("feeding started");
+    await feedUrl();
+    console.log("feeding ended");
+  } catch (error) {
+    console.log("feeding error");
+  }
+};
+// startFeed();
+// setInterval(startFeed, 1800000);

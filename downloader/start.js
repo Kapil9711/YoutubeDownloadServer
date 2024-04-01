@@ -1,9 +1,8 @@
 const ytdl = require("ytdl-core");
 const ytpl = require("ytpl");
-const generateDownloadLink = require('./generalLinks');
+const generateDownloadLink = require("./generalLinks");
 
-
-const start = async (url) => {
+const start = async (url, saveUrlInDB) => {
   try {
     const songObj = {};
     let count = 1;
@@ -13,6 +12,11 @@ const start = async (url) => {
       for (let ele of playlist.items) {
         try {
           const url = ele.url;
+          try {
+            await saveUrlInDB({ url });
+          } catch (error) {
+            console.log(error);
+          }
           songObj["song" + count] = await generateDownloadLink(url);
           console.log(count);
           count++;
