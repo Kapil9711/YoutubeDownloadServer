@@ -24,7 +24,7 @@ const createDownloadLink = async (req, res) => {
     const alreadyExist = await YoutubeUrlModel.findOne(req.body);
     console.log(req.body);
     const { url } = req.body;
-    const data = await start(url);
+    const data = await start(url, saveUrlInDB);
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ msg: "something went wrong", error });
@@ -57,7 +57,7 @@ const createDataInDataBase = async (req, res) => {
       }
       const songCreated = await youtubeModel.create(songDetails);
     }
-
+    console.log("added to db");
     res.status(201).json({ msg: "created" });
   } catch (error) {
     res.status(500).json({ msg: "failed to add", error });
@@ -69,6 +69,8 @@ const feedUrl = async () => {
     await youtubeModel.deleteMany({});
     console.log("deleted");
     const allUrls = await YoutubeUrlModel.find({});
+    console.log("Total songs = ", allUrls.length);
+    let count = 1;
     for (let urlObj of allUrls) {
       const { url } = urlObj;
 
@@ -83,11 +85,15 @@ const feedUrl = async () => {
           continue;
         }
         const songCreated = await youtubeModel.create(songDetails);
-        console.log(songCreated);
+        console.log(`${count} of ${allUrls.length} done`);
+        count++;
       }
     }
   } catch (error) {
-    console.log("error in saving the song ");
+    let errCount = 1;
+
+    console.log(errCount, "errors");
+    errCount++;
   }
 };
 
