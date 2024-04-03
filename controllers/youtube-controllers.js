@@ -3,6 +3,7 @@ const start = require("../downloader/start");
 const youtubeModel = require("../models/models");
 const YoutubeUrlModel = require("../models/UrlModel");
 const YoutubeArijitModel = require("../models/arijitModel");
+const YoutubeTrendingModel = require("../models/trendingModel");
 
 // ***************************importing section ended*********************
 
@@ -103,6 +104,44 @@ const getArijitSongs = async (req, res) => {
   }
 };
 
+const createTrendingSongs = async (req, res) => {
+  try {
+    const { url } = req.body;
+    const songData = await start(url, saveUrlInDB);
+    for (let songs in songData) {
+      const { songName, songUrl, thumbnailUrl } = songData[songs];
+
+      try {
+        const songExist = await YoutubeTrendingModel.findOne({
+          songName,
+        });
+        if (songExist) {
+          console.log("alerdy exist");
+          continue;
+        }
+      } catch (error) {
+        // console.log(error);
+      }
+
+      await YoutubeTrendingModel.create({ songName, songUrl, thumbnailUrl });
+    }
+
+    res.json("created");
+  } catch (error) {
+    res.json(error);
+    console.log(error);
+  }
+};
+
+const getTrendingSongs = async (req, res) => {
+  try {
+    const arijitSongs = await YoutubeTrendingModel.find({});
+    res.status(200).json(arijitSongs);
+  } catch (error) {
+    res.status(500).json({ msg: "error" });
+  }
+};
+
 const feedUrl = async () => {
   try {
     await youtubeModel.deleteMany({});
@@ -144,4 +183,6 @@ module.exports = {
   saveUrlInDB,
   createArijitSongs,
   getArijitSongs,
+  createTrendingSongs,
+  getTrendingSongs,
 };
