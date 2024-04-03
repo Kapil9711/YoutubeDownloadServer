@@ -7,6 +7,8 @@ const {
   createDownloadLink,
   createDataInDataBase,
   getAllSongs,
+  createArijitSongs,
+  getArijitSongs,
 } = require("../controllers/youtube-controllers");
 
 // ***************************importing section ended*********************
@@ -16,6 +18,8 @@ const {
 router.route("/download").post(createDownloadLink);
 router.route("/createSongs").post(createDataInDataBase);
 router.route("/getAllSongs").get(getAllSongs);
+router.route("/createarijit").post(createArijitSongs);
+router.route("/getarijitsongs").get(getArijitSongs);
 
 // ***************************routing section started*********************
 

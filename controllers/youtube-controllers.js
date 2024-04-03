@@ -2,6 +2,7 @@
 const start = require("../downloader/start");
 const youtubeModel = require("../models/models");
 const YoutubeUrlModel = require("../models/UrlModel");
+const YoutubeArijitModel = require("../models/arijitModel");
 
 // ***************************importing section ended*********************
 
@@ -64,6 +65,44 @@ const createDataInDataBase = async (req, res) => {
   }
 };
 
+const createArijitSongs = async (req, res) => {
+  try {
+    const { url } = req.body;
+    const songData = await start(url, saveUrlInDB);
+    for (let songs in songData) {
+      const { songName, songUrl, thumbnailUrl } = songData[songs];
+
+      try {
+        const songExist = await YoutubeArijitModel.findOne({
+          songName,
+        });
+        if (songExist) {
+          console.log("alerdy exist");
+          continue;
+        }
+      } catch (error) {
+        // console.log(error);
+      }
+
+      await YoutubeArijitModel.create({ songName, songUrl, thumbnailUrl });
+    }
+
+    res.json("created");
+  } catch (error) {
+    res.json(error);
+    console.log(error);
+  }
+};
+
+const getArijitSongs = async (req, res) => {
+  try {
+    const arijitSongs = await YoutubeArijitModel.find({});
+    res.status(200).json(arijitSongs);
+  } catch (error) {
+    res.status(500).json({ msg: "error" });
+  }
+};
+
 const feedUrl = async () => {
   try {
     await youtubeModel.deleteMany({});
@@ -103,4 +142,6 @@ module.exports = {
   getAllSongs,
   feedUrl,
   saveUrlInDB,
+  createArijitSongs,
+  getArijitSongs,
 };

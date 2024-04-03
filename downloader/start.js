@@ -17,7 +17,9 @@ const start = async (url, saveUrlInDB) => {
           } catch (error) {
             console.log(error);
           }
-          songObj["song" + count] = await generateDownloadLink(url);
+
+          const data = await generateDownloadLink(url);
+          songObj["song" + count] = data;
           console.log(count);
           count++;
         } catch (error) {}
